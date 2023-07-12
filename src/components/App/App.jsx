@@ -18,28 +18,28 @@ import { Modal } from '../Modal/Modal';
   const [largeImageURL, setLargeImageURL] = useState('');
 
   useEffect(() => {
-    fetchImages(inputRequest, page);
-  }, [inputRequest, page]);
+    const fetchImages = async (query, page) => {
+      setIsLoading(true);
+      setError(null);
+      if (!query) {
+        setIsLoading(false);
+        return;
+      }
+      try {
+        const { hits, totalHits } = await fetchPixabayImages(query, page);
+        const totalPages = Math.ceil(totalHits / perPage);
+        const shouldLoadMore = page < totalPages;
+        setImages((prevImages) => [...prevImages, ...hits]);
+        setLoadMore(shouldLoadMore);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const fetchImages = async (query, page) => {
-    setIsLoading(true);
-    setError(null);
-    if (!query) {
-      setIsLoading(false);
-      return;
-    }
-    try {
-      const { hits, totalHits } = await fetchPixabayImages(query, page);
-      const totalPages = Math.ceil(totalHits / perPage);
-      const shouldLoadMore = page < totalPages;
-      setImages((prevImages) => [...prevImages, ...hits]);
-      setLoadMore(shouldLoadMore);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    fetchImages(inputRequest, page);
+  }, [inputRequest, page, perPage]);
 
   const formSubmit = (inputRequest) => {
     setInputRequest(inputRequest);
@@ -78,6 +78,7 @@ import { Modal } from '../Modal/Modal';
     </>
   );
 };
+
 
 
 
