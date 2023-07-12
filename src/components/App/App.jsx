@@ -75,12 +75,11 @@ import { Modal } from '../Modal/Modal';
       {showModal && (
         <Modal largeImageURL={largeImageURL} onClose={closeModal} />
       )}
+
+      {error && <p>Error: {error}</p>}
     </>
   );
 };
-
-
-
 
 
 
